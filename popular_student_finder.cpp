@@ -4,7 +4,7 @@
 using namespace std;
 
 int main() {
-    const int tstudents = 50; // Maximum number of unique students
+    const int tstudents = 50;
     string students[tstudents];
     int mentions[tstudents] = {0};
     int scount = 0;
@@ -14,18 +14,14 @@ int main() {
         cout << "Error opening file!" << endl;
         return 1;
     }
-
     string line;
 
-    // Skip the header line
     getline(file, line);
 
-    // Process each line
     while (getline(file, line)) {
         string friendName = "";
         int index = 0; // Index to traverse the line
 
-        // Skip the first column (student's name)
         while (index < line.length() && line[index] != ',') {
             index++;
         }
