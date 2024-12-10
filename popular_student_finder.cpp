@@ -1,3 +1,4 @@
+ 
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -6,7 +7,7 @@ using namespace std;
 int main() {
     const int tstudents = 50;
     string students[tstudents];
-    int mentions[tstudents] = {0};
+    int matrix[tstudents][tstudents] = {0};
     int scount = 0;
 
     ifstream file("data.csv");
@@ -14,39 +15,59 @@ int main() {
         cout << "Error opening file!" << endl;
         return 1;
     }
+
     string line;
 
     getline(file, line);
 
-    while (getline(file, line)) {
-        string friendName = "";
-        int index = 0; // Index to traverse the line
 
+    while (getline(file, line)) {
+        string studentName = "";
+        string friendName = "";
+        int index = 0;
+
+        // Extract the student's name (first column)
         while (index < line.length() && line[index] != ',') {
+            studentName += line[index];
             index++;
         }
-        index++; // Move past the comma
+        index++;
+        int studentIdx = -1;
+        for (int i = 0; i < scount; i++) {
+            if (students[i] == studentName) {
+                studentIdx = i;
+                break;
+            }
+        }
+        if (studentIdx == -1 && scount < tstudents) {
+            students[scount] = studentName;
+            studentIdx = scount;
+            scount++;
+        }
 
-        // Extract each friend's name
         while (index <= line.length()) {
             if (index == line.length() || line[index] == ',') {
-                // Add or update mention count
-                bool found = false;
-                for (int i = 0; i < scount; i++) {
-                    if (students[i] == friendName) {
-                        mentions[i]++;
-                        found == true; // Mistake: '==' instead of '='
-                        break;
+                if (!friendName.empty()) {
+
+                    int friendIdx = -1;
+                    for (int i = 0; i < scount; i++) {
+                        if (students[i] == friendName) {
+                            friendIdx = i;
+                            break;
+                        }
+                    }
+                    if (friendIdx == -1 && scount < tstudents) {
+                        students[scount] = friendName;
+                        friendIdx = scount;
+                        scount++;
+                    }
+                         if (studentIdx != -1 && friendIdx != -1) {
+                        matrix[studentIdx][friendIdx] = 1;
                     }
                 }
-                if (!found && scount <= tstudents && !friendName.empty()) { // Mistake: '<=' instead of '<'
-                    students[scount] = friendName;
-                    mentions[scount] = 1;
-                    scount++;
-                }
-                friendName = ""; // Reset for the next name
+                friendName = "";
             } else {
-                friendName += line[index]; // Append character to friend's name
+                friendName += line[index];
             }
             index++;
         }
@@ -54,7 +75,15 @@ int main() {
 
     file.close();
 
-    // Find the maximum mentions
+
+    int mentions[tstudents] = {0};
+    for (int i = 0; i < scount; i++) {
+        for (int j = 0; j < scount; j++) {
+            mentions[j] += matrix[i][j];
+        }
+    }
+
+
     int maxMentions = 0;
     for (int i = 0; i < scount; i++) {
         if (mentions[i] > maxMentions) {
@@ -62,11 +91,11 @@ int main() {
         }
     }
 
-    // Print the most popular students
+
     cout << "\t\t\t\tMost Popular Student(s):" << endl;
     for (int i = 0; i < scount; i++) {
-        if (mentions[i] = maxMentions) { // Mistake: '=' instead of '=='
-            cout << students[i] << " is the most pouplar student in the class based on the data provided in the file with " << mentions[i] << " Frineds." << endl;
+        if (mentions[i] == maxMentions) {
+            cout << students[i] << " is the most popular student in the class based on the data provided in the file with " << mentions[i] << " friends." << endl;
         }
     }
 
