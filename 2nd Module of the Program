@@ -1,0 +1,3 @@
+This program Find the Asymmetric Relatioship between the students.
+It finds that wether for a student pair (A,B) the pair (B,A) exists or not.
+If their exists a Asymmetric relatioship the program displys the pair of thr students on the file.
