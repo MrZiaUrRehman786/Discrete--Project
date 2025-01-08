@@ -30,3 +30,33 @@ int DFS(int src, bool visited[MAX], int adjMatrix[MAX][MAX])
     }
     return reachable;
 }
+
+void findBroadcastPoints() {
+    cout << "Broadcast Points:\n";
+    bool found = false;
+    for (int i = 0; i < numStudents; i++) {
+        bool visited[MAX] = {false};
+
+        int reachableFromI = DFS(i, visited, adj);
+
+        if (reachableFromI == numStudents) {
+                   bool visitedReverse[MAX] = {false};
+            int reachableInReverse = DFS(i, visitedReverse, transposedAdj);
+
+            if (reachableInReverse == numStudents) {
+                cout << names[i] << " is a broadcast point.\n";
+                found = true;
+            }
+        }
+    }
+
+    if (!found) {
+        cout << "No broadcast points found.\n";
+    }
+}
+void loadGraphFromCSV(const char *filename) {
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cerr << "Error opening file.\n";
+        return;
+    }
