@@ -60,3 +60,59 @@ void loadGraphFromCSV(const char *filename) {
         cerr << "Error opening file.\n";
         return;
     }
+string line;
+    int index = 0;
+
+    while (getline(file, line)) {
+        stringstream ss(line);
+        string person;
+        getline(ss, person, ',');
+
+        int personIndex = -1;
+        for (int i = 0; i <= index; i++) {
+            if (names[i] == person) {
+                personIndex = i;
+                break;
+            }
+        }
+        if (personIndex == -1) {
+            names[index] = person;
+            personIndex = index++;
+        }
+
+      
+        string friendName;
+        while (getline(ss, friendName, ',')) {
+            int friendIndex = -1;
+
+       
+            for (int i = 0; i < index; i++) {
+                if (names[i] == friendName) {
+                    friendIndex = i;
+                    break;
+                }
+            }
+
+            if (friendIndex == -1) {
+                names[index] = friendName;
+                friendIndex = index++;
+            }
+
+           
+            addEdge(personIndex, friendIndex);
+        }
+    }
+
+    numStudents = index;
+    file.close();
+}
+
+int main() {
+    const char *filename = "data.csv"; 
+    loadGraphFromCSV(filename);
+
+
+    findBroadcastPoints();
+
+    return 0;
+}
